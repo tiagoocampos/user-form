@@ -19,9 +19,17 @@ export class CreateUserController {
 
 export class ListUserController {
     async handle(req: Request, res: Response) {
-        const listUserService = new ListUserService();
+        try {
+            const listUserService = new ListUserService();
         const users = await listUserService.execute();
         return res.json(users);
+        } catch (error) {
+            if(error instanceof Error) {
+                return res.status(400).json({ message: error.message });
+            }
+            return res.status(500).json({ error: "Erro interno do servidor" });
+            
+        }
     }
 }
 
