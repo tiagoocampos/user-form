@@ -1,5 +1,4 @@
 import prismaClient from "../prisma/index.js";
-import { Request, Response } from "express";
 
 interface User {
     name: string;
@@ -8,6 +7,17 @@ interface User {
 
 class CreateUserService {
     async execute({name, email}: User) {
+
+        const userAlreadyExists = await prismaClient.user.findFirst({
+            where: {
+                email: email
+            }
+        })
+
+        if (userAlreadyExists) {
+            throw new Error("Usuário já cadastrado");
+        }
+
         const user = await prismaClient.user.create({
             data: {
                 name,
@@ -19,4 +29,11 @@ class CreateUserService {
     }
 }
 
-export { CreateUserService }
+class ListUserService {
+    async execute() {
+        const users = await prismaClient.user.findMany();
+        return users;
+    }
+}
+
+export { CreateUserService, ListUserService };

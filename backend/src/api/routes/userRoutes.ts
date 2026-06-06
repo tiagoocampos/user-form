@@ -1,11 +1,11 @@
 import { Request, Response, Router } from 'express';
-import { CreateUserController } from '../controllers/userController.js';
+import { CreateUserController, ListUserController } from '../controllers/userController.js';
+import { validateSchema } from '../../middlewares/validateSchema.js';
+import { createUserSchema } from '../../schemas/userSchemas.js';
 
 const router = Router();
 
-router.post('/users', new CreateUserController().handle);
-router.get('/users', (req: Request, res: Response) => {
-    res.send('Listagem de usuários');
-});
+router.post('/users', validateSchema(createUserSchema), new CreateUserController().handle);
+router.get('/users', new ListUserController().handle);
 
 export { router };
