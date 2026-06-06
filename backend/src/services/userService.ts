@@ -1,4 +1,4 @@
-
+import { publishToQueue } from "../lib/rabbitmq.js";
 import userRepository from "../repositories/userRepository.js";
 
 interface User {
@@ -15,7 +15,7 @@ class CreateUserService {
             throw new Error("Usuário já cadastrado");
         }
 
-        
+        await publishToQueue("send-email", { name, email });
         
         return userRepository.create({name, email});
     }

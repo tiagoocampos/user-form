@@ -13,5 +13,17 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"   # porta da aplicação
+      - "15672:15672" # painel de gerenciamento
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   db_data:
+  rabbitmq_data:
