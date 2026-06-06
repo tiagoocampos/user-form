@@ -3,10 +3,17 @@ import { CreateUserService, ListUserService } from "../../services/userService.j
 
 export class CreateUserController {
     async handle(req: Request, res: Response) {
-        const { name, email } = req.body;
+        try {
+            const { name, email } = req.body;
         const createUserService = new CreateUserService();
         const user = await createUserService.execute({name, email});
         return res.json(user);
+        } catch (error) {
+            if(error instanceof Error) {
+                return res.status(400).json({ message: error.message });
+            }
+            return res.status(500).json({ error: "Erro interno do servidor" });
+        }
     }
 }
 
