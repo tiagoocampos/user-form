@@ -7,5 +7,7 @@ const router = Router();
 
 router.post('/users', validateSchema(createUserSchema), new CreateUserController().handle);
 router.get('/users', new ListUserController().handle);
+router.delete('/users/:id', new ListUserController().handle);
+router.put('/users/:id', new ListUserController().handle);
 
 export { router };

@@ -1,4 +1,6 @@
-import prismaClient from "../prisma/index.js";
+
+import userRepository from "../repositories/userRepository.js";
+import { UserAlreadyExists } from "../exceptions/userAlreadyExists.js";
 
 interface User {
     name: string;
@@ -8,32 +10,41 @@ interface User {
 class CreateUserService {
     async execute({name, email}: User) {
 
-        const userAlreadyExists = await prismaClient.user.findFirst({
-            where: {
-                email: email
-            }
-        })
+        const userAlreadyExists = await userRepository.findByEmail(email);
 
         if (userAlreadyExists) {
-            throw new Error("Usuário já cadastrado");
+            throw new UserAlreadyExists();
         }
 
-        const user = await prismaClient.user.create({
-            data: {
-                name,
-                email
-            }
-        });
-        console.log(user)
-        return user;
+        
+        return userRepository.create({name, email});
+    }
+}
+
+class UpdateUserService {
+    async execute(id: string, {name, email}: User) {
+        return await userRepository.update(id, {name, email});
+    }
+}
+
+class DeleteUserService {
+    async execute(id: string) {
+        return await userRepository.delete(id);
     }
 }
 
 class ListUserService {
     async execute() {
-        const users = await prismaClient.user.findMany();
+
+        
+
+        const users = await userRepository.findAll();
+
+        if(users.length === 0) {
+            throw new Error("Nenhum usuário cadastrado");
+        }
         return users;
     }
 }
 
-export { CreateUserService, ListUserService };
+export { CreateUserService, ListUserService, UpdateUserService, DeleteUserService };
