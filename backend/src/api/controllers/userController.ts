@@ -64,7 +64,7 @@ export class DeleteUserController {
             }
             const deleteUserService = new DeleteUserService();
             await deleteUserService.execute(id);
-            return res.status(204).json({ message: "Usuário deletado com sucesso" });
+            return res.status(200).json({ message: "Usuário deletado com sucesso" });
         } catch (error) {
             if(error instanceof Error) {
                 return res.status(400).json({ message: error.message });
